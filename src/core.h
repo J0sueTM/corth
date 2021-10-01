@@ -43,6 +43,6 @@ struct program
   unsigned int stack_count;
   unsigned int stack_index;
   unsigned int stack_direction;
-} program;
+};
 
 #endif /* CORTH_CORE_H */

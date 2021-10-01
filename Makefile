@@ -1,9 +1,7 @@
-target=bin/corth
-source=src/*.c
 CC=gcc
 
 all:
-	${CC} ${source} -o ${target}
+	${CC} src/*.c -I src/ -o bin/corth
 
 clean:
 	rm bin/*

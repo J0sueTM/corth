@@ -35,7 +35,7 @@ emulate_operation
 
   } break;
   default:
-    printf("ERROR: Unknown mode %li\n", _type);
+    printf("ERROR: Unknown mode %d\n", _type);
 
     break;
   }
