@@ -115,15 +115,24 @@ parse_current_word
   char           *_current_word
 )
 {
-  /* Push int */
+  /* Push */
   if (_current_word[0] >= '0' &&
       _current_word[0] <= '9')
   {
     int number_to_push = (int)strtol((const char *)_current_word, NULL, 10);
-    printf("push: %d\n", number_to_push);
+    _program->number_to_push = number_to_push;
+
+    parse_operation(PUSH_OPERATION, _program);
   }
-  else if (_current_word[0] == '+')
-    printf("sum\n");
+  else if (strlen(_current_word) == 1 &&
+           _current_word[0] == '+')
+    parse_operation(PLUS_OPERATION, _program);
+  else if (strlen(_current_word) == 1 &&
+           _current_word[0] == '-')
+    parse_operation(MINUS_OPERATION, _program);
+  else if (strlen(_current_word) == 1 &&
+           _current_word[0] == '.')
+    parse_operation(DUMP_OPERATION, _program);
   else
   {
     printf("ERROR: Can't parse unknown word %s.\n", _current_word);
@@ -142,6 +151,10 @@ load_operations
 )
 {
   _program->operation_count = 0;
+  _program->stack_index = 0;
+  _program->stack_count = 0;
+  _program->number_to_push = 0;
+  _program->stack_direction = STACK_ITERATION_DIRECTION_RIGHT;
 
   /* Iterates through the source code, and reads word by word, separated by characters that aren't
    * in the range of 33 and 126, which are human readable characters.

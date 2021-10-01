@@ -2,16 +2,8 @@
 #define CORTH_OPERATION_H
 
 #include "core.h"
-
-#define UNKNOWN_OPERATION 0
-
-#define PUSH_OPERATION 3
-#define POP_OPERATION  4
-
-#define SUM_OPERATION   1
-#define MINUS_OPERATION 2
-
-#define DUMP_OPERATION 5
+#include "emulator.h"
+#include "compiler.h"
 
 #define parse_operation(_type, _program) \
   (_program->mode == EMULATION_MODE) \
