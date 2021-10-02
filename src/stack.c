@@ -26,14 +26,14 @@ pop_from_stack
   struct program *_program
 )
 {
-  if (_program->stack_count + 1 <= 0)
+  if (_program->stack_count <= 0)
   {
     printf("ERROR: Stack underflow.\n");
 
     return 0;
   }
 
-  _program->stack_index -= _program->stack_direction;
+  _program->stack_index -= (_program->stack_direction);
   --_program->stack_count;
   int popped_number = _program->stack[_program->stack_index];
 

@@ -167,24 +167,27 @@ load_operations
   long word_begin = 0, word_end = 0;
   for (long i = 0; i <= _program->source_file_size; ++i)
   {
+    /* Comment */
+    if (is_reading_comment)
+    {
+      if (_program->source[i] == '\n' ||
+          _program->source[i] == '\0')
+      is_reading_comment = false;
+
+      continue;
+    }
+    else if (!is_reading_comment &&
+             _program->source[i] == '#')
+    {
+      is_reading_comment = true;
+
+      continue;
+    }
+    
     if ((_program->source[i] >= '\'' &&
          _program->source[i] <= '~' ))
     {
-      if (!is_reading_comment &&
-          _program->source[i] == '#')
-      {
-        is_reading_comment = true;
-
-        continue;
-      }
-      else if (is_reading_comment &&
-               _program->source[i] == '\n')
-      {
-        is_reading_comment = true;
-
-        continue;
-      }
-      else if (!is_reading_word)
+      if (!is_reading_word)
       {
         is_reading_word = true;
         word_begin = i;

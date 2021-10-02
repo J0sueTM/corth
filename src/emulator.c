@@ -25,9 +25,15 @@ emulate_operation
 
   } break;
   case MINUS_OPERATION:
-    printf("Minus.\n");
+  {
+    int a = pop_from_stack(_program);
+    int b = pop_from_stack(_program);
 
-    break;
+    _program->number_to_push = (b - a);
+    if (!emulate_operation(PUSH_OPERATION, _program))
+      return false;
+
+  } break;
   case DUMP_OPERATION:
   {
     int a = pop_from_stack(_program);
