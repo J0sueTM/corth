@@ -1,11 +1,85 @@
 #include "corth.h"
 
-void
+inline void
 usage
 (
   void
+);
+
+bool
+parse_arguments
+(
+  int             _argument_count,
+  char          **_argument_values,
+  struct program *_program
+);
+
+bool
+load_source_from_input_file
+(
+  struct program *_program
+);
+
+bool
+parse_current_word
+(
+  struct program *_program,
+  char           *_current_word
+);
+
+bool
+load_and_parse_operations
+(
+  struct program *_program
+);
+
+int
+main
+(
+  int    _argument_count,
+  char **_argument_values
 )
 {
+  struct program program_data;
+  if (!parse_arguments(_argument_count, _argument_values, &program_data))
+    return 1;
+
+  /* Initialise assembly file */
+  if (program_data.mode == COMPILATION_MODE)
+  {
+    fprintf(program_data.output_file, "segment .text\n");
+    fprintf(program_data.output_file, "global _start\n");
+    fprintf(program_data.output_file, "_start:\n");
+  }
+
+  if (!load_source_from_input_file(&program_data))
+    return 1;
+  if (!load_and_parse_operations(&program_data))
+    return 1;
+
+  /* End assembly file */
+  if (program_data.mode == COMPILATION_MODE)
+  {
+    fprintf(program_data.output_file, "\n  mov rax, 60\n");
+    fprintf(program_data.output_file, "  mov rdi, 0\n");
+    fprintf(program_data.output_file, "  syscall\n");
+  }
+
+  if (!compile_program(&program_data))
+  {
+    printf("ERROR: Could not compile program");
+
+    return 1;
+  }
+
+  return 0;
+}
+
+inline void
+usage
+(
+  void
+){
   printf("USAGE:\n");
   printf("  EMULATION:   corth emul input_file\n");
   printf("  COMPILATION: corth comp input_file output_file\n");
@@ -55,10 +129,7 @@ parse_arguments
   else
     _program->mode = COMPILATION_MODE;
 
-  /* Predefined values */
-  strcpy(_program->input_file_path, "input.corth");
-  strcpy(_program->output_file_path, "output");
-  
+  strcpy(_program->input_file_path, _argument_values[2]);
   if (_program->mode == EMULATION_MODE &&
       _argument_count == 4)
     printf("WARNING: Provided output file on emulation mode. Ignoring.\n");
@@ -66,8 +137,18 @@ parse_arguments
            _argument_count < 4)
     printf("WARNING: Output file wasn't provided. Using default: output\n");
   else if (_argument_count == 4)
-    strcpy(_program->output_file_path, _argument_values[3]);
-  strcpy(_program->input_file_path, _argument_values[2]);
+  {
+    /* output.asm */
+    sprintf(_program->output_file_path, "%s.asm", _argument_values[3]);
+
+    _program->output_file = fopen(_program->output_file_path, "w");
+    if (!_program->output_file)
+    {
+      printf("ERROR: Could not open %s output file", _program->output_file_path);
+
+      return false;
+    }
+  }
 
   return true;
 }
@@ -145,7 +226,7 @@ parse_current_word
 }
 
 bool
-load_operations
+load_and_parse_operations
 (
   struct program *_program
 )
@@ -210,22 +291,4 @@ load_operations
   }
 
   return true;
-}
-
-int
-main
-(
-  int    _argument_count,
-  char **_argument_values
-)
-{
-  struct program program_data;
-  if (!parse_arguments(_argument_count, _argument_values, &program_data))
-    return 1;
-  if (!load_source_from_input_file(&program_data))
-    return 1;
-  if (!load_operations(&program_data))
-    return 1;
-
-  return 0;
 }

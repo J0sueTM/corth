@@ -14,15 +14,13 @@
 #define STACK_ITERATION_DIRECTION_LEFT  -1
 
 #define MAX_OPERATION_COUNT 16383
+
 #define UNKNOWN_OPERATION 0
-
-#define PUSH_OPERATION 3
-#define POP_OPERATION  4
-
-#define PLUS_OPERATION  1
-#define MINUS_OPERATION 2
-
-#define DUMP_OPERATION 5
+#define PLUS_OPERATION    1
+#define MINUS_OPERATION   2
+#define PUSH_OPERATION    3
+#define POP_OPERATION     4
+#define DUMP_OPERATION    5
 
 struct program
 {

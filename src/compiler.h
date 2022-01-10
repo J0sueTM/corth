@@ -10,4 +10,10 @@ compile_operation
   struct program *_program
 );
 
+bool
+compile_program
+(
+  struct program *_program
+);
+
 #endif /* CORTH_COMPILER_H */
